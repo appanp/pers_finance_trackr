@@ -1,0 +1,31 @@
+digraph PersInvestArch {
+    node [shape="rect"]
+
+    // All nodes & clusters first
+    mobapp [label="Mobile\n  App"]
+    appusr [label="Investor",shape="oval"]
+    dshbrdui [label="G-Sheets\nBrowser\n View"]
+    mfapi [label="api.mfapi.in",shape=oval]
+    appsvc [label="Data \nAggregator\nService"]
+    subgraph cluster_0 {
+        clusterrank=global
+        label="G-Sheets Server"
+        labelloc=b
+        style="rounded,dashed"
+        {
+            rank=same
+            gsf_main [label="Main\n File",shape="note"]
+            trans_files [label="Monthly\nTrans.\nList\nFiles",shape="note"]
+        }
+    }
+
+    // All edges below
+    gsf_main -> trans_files [style=dotted]
+    appusr -> dshbrdui [dir="both"]
+    dshbrdui -> gsf_main [dir="both"]
+    appusr -> mobapp [dir="both"]
+    mobapp -> trans_files [style="dashed"]
+    dshbrdui -> appsvc
+    gsf_main -> appsvc [style=dotted,constraint=false]
+    appsvc -> mfapi
+}
