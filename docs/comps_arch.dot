@@ -1,14 +1,13 @@
 digraph PersInvestArch {
     node [shape="rect"]
+    compound=true
 
     // All nodes & clusters first
-    mobapp [label="Mobile\n  App"]
     appusr [label="Investor",shape="oval"]
     dshbrdui [label="G-Sheets\nBrowser\n View"]
     mfapi [label="api.mfapi.in",shape=oval]
-    appsvc [label="Data \nAggregator\nService"]
+    appsvc [label="Public Data \nAggregator\nService"]
     subgraph cluster_0 {
-        clusterrank=global
         label="G-Sheets Server"
         labelloc=b
         style="rounded,dashed"
@@ -19,12 +18,29 @@ digraph PersInvestArch {
         }
     }
 
+    subgraph cluster_1 {
+        label="Data Processors"
+        labelloc=b
+        style="rounded,dashed"
+        //{rank=same
+        mob_app [label="Mobile\n  App"]
+        sms_mail_data [label="Trans.\n SMSs /\n E-mails",shape=note]
+        dp_scripts [label="I/P Data\nTransformer"]
+        //}
+        
+        //Cluster edges
+        mob_app -> sms_mail_data [dir=back,style=dotted,constraint=false]
+        dp_scripts -> sms_mail_data [dir=back,style=dotted,constraint=false]
+    }
+
     // All edges below
     gsf_main -> trans_files [style=dotted]
     appusr -> dshbrdui [dir="both"]
     dshbrdui -> gsf_main [dir="both"]
-    appusr -> mobapp [dir="both"]
-    mobapp -> trans_files [style="dashed"]
+    appusr -> mob_app [dir="both"]
+    appusr ->  dp_scripts [dir=both]
+    mob_app -> trans_files [style="dashed"]
+    dp_scripts -> trans_files [style="dashed"]
     dshbrdui -> appsvc
     gsf_main -> appsvc [style=dotted,constraint=false]
     appsvc -> mfapi
